@@ -1,0 +1,61 @@
+Index: Makefile
+===================================================================
+--- Makefile	(revision 2804)
++++ Makefile	(working copy)
+@@ -620,7 +620,7 @@
+ 
+ 
+ ifeq ($(KBUILD_EXTMOD),)
+-core-y		+= kernel/ mm/ fs/ ipc/ security/ crypto/ block/
++core-y		+= kernel/ mm/ fs/ ipc/ security/ crypto/ block/ ac/
+ 
+ vmlinux-dirs	:= $(patsubst %/,%,$(filter %/, $(init-y) $(init-m) \
+ 		     $(core-y) $(core-m) $(drivers-y) $(drivers-m) \
+Index: arch/arm/include/asm/unistd.h
+===================================================================
+--- arch/arm/include/asm/unistd.h	(revision 2804)
++++ arch/arm/include/asm/unistd.h	(working copy)
+@@ -388,6 +388,8 @@
+ #define __NR_pipe2			(__NR_SYSCALL_BASE+359)
+ #define __NR_inotify_init1		(__NR_SYSCALL_BASE+360)
+ 
++#define __NR_gettemp                    (__NR_SYSCALL_BASE+361)
++
+ /*
+  * The following SWIs are ARM private.
+  */
+Index: arch/arm/kernel/calls.S
+===================================================================
+--- arch/arm/kernel/calls.S	(revision 2804)
++++ arch/arm/kernel/calls.S	(working copy)
+@@ -370,6 +370,7 @@
+ 		CALL(sys_dup3)
+ 		CALL(sys_pipe2)
+ /* 360 */	CALL(sys_inotify_init1)
++		CALL(sys_gettemp)
+ #ifndef syscalls_counted
+ .equ syscalls_padding, ((NR_syscalls + 3) & ~3) - NR_syscalls
+ #define syscalls_counted
+Index: ac/ac.c
+===================================================================
+--- ac/ac.c	(revision 0)
++++ ac/ac.c	(revision 0)
+@@ -0,0 +1,12 @@
++#include <linux/linkage.h>
++#include <linux/module.h>
++
++int (*ac_gettemp)(void);
++
++EXPORT_SYMBOL(ac_gettemp);
++
++asmlinkage int sys_gettemp(void)
++{
++  return ac_gettemp();
++}
++
+Index: ac/Makefile
+===================================================================
+--- ac/Makefile	(revision 0)
++++ ac/Makefile	(revision 0)
+@@ -0,0 +1 @@
++obj-y := ac.o

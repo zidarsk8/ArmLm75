@@ -1,0 +1,215 @@
+<!DOCTYPE QtCreatorProject>
+<qtcreator>
+ <data>
+  <variable>RunConfiguration0-CommandLineArguments</variable>
+  <valuelist type="QVariantList" />
+ </data>
+ <data>
+  <variable>RunConfiguration0-ProFile</variable>
+  <value type="QString" >/home/zidar/Dropbox/3. Letnik/OS1/Domače naloge/Zidar/DN7/programcki/client/vaja5.pro</value>
+ </data>
+ <data>
+  <variable>RunConfiguration0-RunConfiguration.name</variable>
+  <value type="QString" >vaja5</value>
+ </data>
+ <data>
+  <variable>RunConfiguration0-UserSetName</variable>
+  <value type="bool" >false</value>
+ </data>
+ <data>
+  <variable>RunConfiguration0-type</variable>
+  <value type="QString" >Qt4ProjectManager.Qt4RunConfiguration</value>
+ </data>
+ <data>
+  <variable>activeRunConfiguration</variable>
+  <value type="int" >0</value>
+ </data>
+ <data>
+  <variable>activebuildconfiguration</variable>
+  <value type="QString" >Release</value>
+ </data>
+ <data>
+  <variable>buildConfiguration-Release</variable>
+  <valuemap type="QVariantMap" >
+   <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString" >Release</value>
+   <value key="QtVersionId" type="int" >2</value>
+   <value key="buildDirectory" type="QString" >/home/zidar/Dropbox/3. Letnik/OS1/Domače naloge/Zidar/DN7/programcki/client</value>
+  </valuemap>
+ </data>
+ <data>
+  <variable>buildconfiguration-Release-buildstep0</variable>
+  <valuemap type="QVariantMap" >
+   <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString" >Release</value>
+  </valuemap>
+ </data>
+ <data>
+  <variable>buildconfiguration-Release-buildstep1</variable>
+  <valuemap type="QVariantMap" >
+   <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString" >Release</value>
+   <valuelist key="abstractProcess.Environment" type="QVariantList" >
+    <value type="QString" >DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-QYDiF3zO5i,guid=51efed110221f9c46040f9124d664927</value>
+    <value type="QString" >DESKTOP_SESSION=gnome</value>
+    <value type="QString" >DESKTOP_STARTUP_ID=</value>
+    <value type="QString" >DISPLAY=:0.0</value>
+    <value type="QString" >GDMSESSION=gnome</value>
+    <value type="QString" >GDM_LANG=en_US.UTF-8</value>
+    <value type="QString" >GDM_XSERVER_LOCATION=local</value>
+    <value type="QString" >GNOME_DESKTOP_SESSION_ID=this-is-deprecated</value>
+    <value type="QString" >GNOME_KEYRING_PID=12653</value>
+    <value type="QString" >GNOME_KEYRING_SOCKET=/tmp/keyring-hPiDmL/socket</value>
+    <value type="QString" >GPG_AGENT_INFO=/tmp/gpg-UfSfpR/S.gpg-agent:12733:1</value>
+    <value type="QString" >GTK_MODULES=canberra-gtk-module</value>
+    <value type="QString" >GTK_RC_FILES=/etc/gtk/gtkrc:/home/zidar/.gtkrc-1.2-gnome2</value>
+    <value type="QString" >HOME=/home/zidar</value>
+    <value type="QString" >LANG=en_US.UTF-8</value>
+    <value type="QString" >LANGUAGE=</value>
+    <value type="QString" >LOGNAME=zidar</value>
+    <value type="QString" >ORBIT_SOCKETDIR=/tmp/orbit-zidar</value>
+    <value type="QString" >PATH=/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games</value>
+    <value type="QString" >PWD=/home/zidar</value>
+    <value type="QString" >QTDIR=/usr</value>
+    <value type="QString" >SESSION_MANAGER=local/zidar-laptop:/tmp/.ICE-unix/12665</value>
+    <value type="QString" >SHELL=/bin/bash</value>
+    <value type="QString" >SHLVL=0</value>
+    <value type="QString" >SSH_AGENT_PID=12732</value>
+    <value type="QString" >SSH_AUTH_SOCK=/tmp/keyring-hPiDmL/socket.ssh</value>
+    <value type="QString" >USER=zidar</value>
+    <value type="QString" >USERNAME=zidar</value>
+    <value type="QString" >WINDOWPATH=7:7</value>
+    <value type="QString" >XAUTHORITY=/home/zidar/.Xauthority</value>
+    <value type="QString" >XDG_DATA_DIRS=/usr/local/share/:/usr/share/:/usr/share/gdm/</value>
+    <value type="QString" >XDG_SESSION_COOKIE=bb306f01480e11186d048b544cd978df-1298549030.563696-994161046</value>
+   </valuelist>
+   <valuelist key="abstractProcess.arguments" type="QVariantList" >
+    <value type="QString" >/home/zidar/Dropbox/3. Letnik/OS1/Domače naloge/Zidar/DN7/programcki/client/vaja5.pro</value>
+    <value type="QString" >-spec</value>
+    <value type="QString" >/usr/share/qt4/mkspecs/linux-g++</value>
+    <value type="QString" >-r</value>
+   </valuelist>
+   <value key="abstractProcess.command" type="QString" >/usr/bin/qmake-qt4</value>
+   <value key="abstractProcess.enabled" type="bool" >true</value>
+   <value key="abstractProcess.workingDirectory" type="QString" >/home/zidar/Dropbox/3. Letnik/OS1/Domače naloge/Zidar/DN7/programcki/client</value>
+   <value key="buildConfiguration" type="int" >0</value>
+  </valuemap>
+ </data>
+ <data>
+  <variable>buildconfiguration-Release-buildstep2</variable>
+  <valuemap type="QVariantMap" >
+   <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString" >Release</value>
+   <valuelist key="abstractProcess.Environment" type="QVariantList" >
+    <value type="QString" >DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-QYDiF3zO5i,guid=51efed110221f9c46040f9124d664927</value>
+    <value type="QString" >DESKTOP_SESSION=gnome</value>
+    <value type="QString" >DESKTOP_STARTUP_ID=</value>
+    <value type="QString" >DISPLAY=:0.0</value>
+    <value type="QString" >GDMSESSION=gnome</value>
+    <value type="QString" >GDM_LANG=en_US.UTF-8</value>
+    <value type="QString" >GDM_XSERVER_LOCATION=local</value>
+    <value type="QString" >GNOME_DESKTOP_SESSION_ID=this-is-deprecated</value>
+    <value type="QString" >GNOME_KEYRING_PID=12653</value>
+    <value type="QString" >GNOME_KEYRING_SOCKET=/tmp/keyring-hPiDmL/socket</value>
+    <value type="QString" >GPG_AGENT_INFO=/tmp/gpg-UfSfpR/S.gpg-agent:12733:1</value>
+    <value type="QString" >GTK_MODULES=canberra-gtk-module</value>
+    <value type="QString" >GTK_RC_FILES=/etc/gtk/gtkrc:/home/zidar/.gtkrc-1.2-gnome2</value>
+    <value type="QString" >HOME=/home/zidar</value>
+    <value type="QString" >LANG=en_US.UTF-8</value>
+    <value type="QString" >LANGUAGE=</value>
+    <value type="QString" >LOGNAME=zidar</value>
+    <value type="QString" >ORBIT_SOCKETDIR=/tmp/orbit-zidar</value>
+    <value type="QString" >PATH=/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games</value>
+    <value type="QString" >PWD=/home/zidar</value>
+    <value type="QString" >QTDIR=/usr</value>
+    <value type="QString" >SESSION_MANAGER=local/zidar-laptop:/tmp/.ICE-unix/12665</value>
+    <value type="QString" >SHELL=/bin/bash</value>
+    <value type="QString" >SHLVL=0</value>
+    <value type="QString" >SSH_AGENT_PID=12732</value>
+    <value type="QString" >SSH_AUTH_SOCK=/tmp/keyring-hPiDmL/socket.ssh</value>
+    <value type="QString" >USER=zidar</value>
+    <value type="QString" >USERNAME=zidar</value>
+    <value type="QString" >WINDOWPATH=7:7</value>
+    <value type="QString" >XAUTHORITY=/home/zidar/.Xauthority</value>
+    <value type="QString" >XDG_DATA_DIRS=/usr/local/share/:/usr/share/:/usr/share/gdm/</value>
+    <value type="QString" >XDG_SESSION_COOKIE=bb306f01480e11186d048b544cd978df-1298549030.563696-994161046</value>
+   </valuelist>
+   <valuelist key="abstractProcess.arguments" type="QVariantList" >
+    <value type="QString" >-w</value>
+   </valuelist>
+   <value key="abstractProcess.command" type="QString" >/usr/bin/make</value>
+   <value key="abstractProcess.enabled" type="bool" >true</value>
+   <value key="abstractProcess.workingDirectory" type="QString" >/home/zidar/Dropbox/3. Letnik/OS1/Domače naloge/Zidar/DN7/programcki/client</value>
+  </valuemap>
+ </data>
+ <data>
+  <variable>buildconfiguration-Release-cleanstep0</variable>
+  <valuemap type="QVariantMap" >
+   <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString" >Release</value>
+  </valuemap>
+ </data>
+ <data>
+  <variable>buildconfiguration-Release-cleanstep1</variable>
+  <valuemap type="QVariantMap" >
+   <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString" >Release</value>
+  </valuemap>
+ </data>
+ <data>
+  <variable>buildconfigurations</variable>
+  <valuelist type="QVariantList" >
+   <value type="QString" >Release</value>
+  </valuelist>
+ </data>
+ <data>
+  <variable>buildstep0</variable>
+  <valuemap type="QVariantMap" >
+   <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString" ></value>
+  </valuemap>
+ </data>
+ <data>
+  <variable>buildstep1</variable>
+  <valuemap type="QVariantMap" >
+   <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString" ></value>
+   <value key="mkspec" type="QString" ></value>
+  </valuemap>
+ </data>
+ <data>
+  <variable>buildstep2</variable>
+  <valuemap type="QVariantMap" >
+   <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString" ></value>
+  </valuemap>
+ </data>
+ <data>
+  <variable>buildsteps</variable>
+  <valuelist type="QVariantList" >
+   <value type="QString" >trolltech.qt4projectmanager.gdbmaros</value>
+   <value type="QString" >trolltech.qt4projectmanager.qmake</value>
+   <value type="QString" >trolltech.qt4projectmanager.make</value>
+  </valuelist>
+ </data>
+ <data>
+  <variable>cleanstep0</variable>
+  <valuemap type="QVariantMap" >
+   <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString" ></value>
+   <value key="clean" type="bool" >true</value>
+  </valuemap>
+ </data>
+ <data>
+  <variable>cleanstep1</variable>
+  <valuemap type="QVariantMap" >
+   <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString" ></value>
+   <value key="clean" type="bool" >true</value>
+  </valuemap>
+ </data>
+ <data>
+  <variable>cleansteps</variable>
+  <valuelist type="QVariantList" >
+   <value type="QString" >trolltech.qt4projectmanager.gdbmaros</value>
+   <value type="QString" >trolltech.qt4projectmanager.make</value>
+  </valuelist>
+ </data>
+ <data>
+  <variable>defaultFileEncoding</variable>
+  <value type="QByteArray" >UTF-8</value>
+ </data>
+ <data>
+  <variable>project</variable>
+  <valuemap type="QVariantMap" />
+ </data>
+</qtcreator>

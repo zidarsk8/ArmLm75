@@ -1,0 +1,122 @@
+temp senzo je povezan preko i^2c vodila ki ga je razvil phipis. ... ta
+
+------------------------------------
+
+priprava jedra:
+z svn-ja prenesemo linux-2.6.27-fri jedro
+
+cd /home/arm/
+svn checkout http://212.235.189.172/svn/miha.zidar/linux-2.6.27-fri linux-2.6.27-fri --username student
+
+cd linux-2.6.27-fri
+
+prenesmo se patch iz vaje7 in naredimo potrebne spremembe v linux jedru.
+
+patch -p0 < vaja7.diff
+
+
+posamezne module lahko vklopimo ali izklopimo z pomocjo menuja
+
+make menuconfig
+
+nato tam naredimo sliko jedra
+
+make CROSS_COMPILE=arm-linux- ARCH=arm uImage
+
+//ce vam manjka kaksen paket, ga instalirajte in se enkrat pozenite make. men je manjkal uboot-mkimage 
+
+
+slika uImage se nahaja v arch/arm/boot/uImage 
+
+
+----------------------------------
+
+
+priprava jedernega modula:
+
+prestavimo se v mapo kjer imamo ac.c
+
+naredimo makefile
+
+echo "obj-m := ac.o" > Makefile 
+
+
+skompajlamo jederni modul
+
+make CROSS_COMPILE=arm-linux- -C /home/arm/linux-2.6.27-fri -M /home/arm/gon modules
+
+
+sedaj imamo tukaj notri tudi ac.ko 
+
+
+------------------------------------
+
+prirprava tftp streznika:
+
+vse pise tukaj
+
+http://www.unix.com/ubuntu/127020-configuring-ubuntu-9-04-tftp-server.html
+
+nato dajte v mapo od streznika uImage datoteko.
+
+
+------------------------------------
+
+
+priprava arm ploscice:
+
+na računalniku moramo imeti tftp streznik z datotekama uImage in ac.ko
+
+povežemo arm ploščico na računalnik preko serijskega porta 
+    naprava: /dev/ttyS0
+    hitrost: 115200
+    brez paritete
+    8 bitov
+    1 stop bit
+    brez flow control
+    
+uklopimo arm ploščico, in prekinemo boot postopek (čaka 3 sekunde pred autoboot, in takrat samo pritisnemo eno tipko)
+tako pridemo v uboot meni.
+
+v uboot okolju nastavimo ip ploscicne in streznika
+setenv ipaddr 192.168.0.2
+setenv serverip 192.168.0.4
+
+za dodatne moznosti si poglejte http://www.embedian.com/index.php?main_page=ubootev
+
+
+
+ko smo prizgali arm, so se nam izpisali logicni naslovi dolocenih stvari. 
+izpis zgleda priblizno tako:
+Area 0: C0000000 to C00041FF (RO) Bootstrap
+Area 1: C0004200 to V00083FF      Enviroment
+Area 2: C0008400 to C0041FFF (RO) U-Boot
+Area 3: C0042000 to C0251FFF      Kernel
+Area 4: C0252000 to C041FFFF      FS
+
+v temu primer se kernel nahaja na naslovu od C0042000 do C0251FFF. In sedaj lahko pobrisemo stari kernel
+Ne pozabu 0x dati pred naslov od in do
+
+> erase 0xC0042000 0xC0251FFF
+
+skopiramo uImage (nov kernel) z računalnika.
+
+> tftp 0x21000000 uImage 
+
+sedaj pa skopiram uImage iz rama v flesh pomilnik
+
+> cp.b 0x21000000 0xC0042000 0xabc (abc cifra je velikost in je napisana pri tftp prenosu na konc)
+
+in sedaj lahko zaženemo naš sistem z novim jedrom.
+
+> boot
+
+prijavimo se v sistem (po moznosti kot root) in skopiramo ac.ko na ploscico (po poljubnem načinu)
+
+# ssh server:ac.ko .
+
+sedaj pa le še dodamo jederni modul ac.ko 
+
+# insmod ac.ko  
+
+tako, sedaj naj bi nasa ploscica znala pravilno servirati sistemski klic 361 (oz get_temp) 

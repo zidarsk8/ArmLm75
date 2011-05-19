@@ -1,0 +1,360 @@
+\documentclass[10pt,a4paper]{article}
+
+\usepackage[utf8x]{inputenc}
+\usepackage{ucs}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{fullpage}
+\usepackage[slovene]{babel}
+\usepackage{graphicx}
+\usepackage{multirow}
+\usepackage{tabularx}
+\usepackage{ifpdf}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{hyperref}
+
+\definecolor{Butter}{rgb}{0.93,0.86,0.25}
+\definecolor{Orange}{rgb}{0.96,0.47,0.00}
+\definecolor{Chocolate}{rgb}{0.75,0.49,0.07}
+\definecolor{Chameleon}{rgb}{0.45,0.82,0.09}
+\definecolor{SkyBlue}{rgb}{0.20,0.39,0.64}
+\definecolor{LightBlue}{rgb}{0.80,0.80,0.99}
+\definecolor{DarkSkyBlue}{rgb}{0.10,0.19,0.34}
+\definecolor{Plum}{rgb}{0.46,0.31,0.48}
+\definecolor{Aluminium4}{rgb}{0.46,0.46,0.48}
+\definecolor{ScarletRed}{rgb}{0.80,0.00,0.00}
+\definecolor{DarkScarletRed}{rgb}{0.40,0.00,0.00}
+
+\lstset{
+	numbers=left,                   % where to put the line-numbers
+	numberstyle={\small},      % the size of the fonts that are used for the line-numbers
+	keywordstyle=[1]{\color{DarkSkyBlue}},
+	keywordstyle=[2]{\color{DarkScarletRed}},
+	keywordstyle=[3]{\bfseries},
+	keywordstyle=[4]{\color{DarkPlum}},
+	keywordstyle=[5]{\color{SkyBlue}},
+	commentstyle={\color{Aluminium4}},
+	stringstyle={\color{Chocolate}},
+	basicstyle={\ttfamily\small},
+	xleftmargin=17pt,
+	breaklines=true,
+	inputencoding=utf8x, 
+	extendedchars=\true,
+	frame=single
+}
+
+\hypersetup{backref,  
+colorlinks=false} 
+
+\pagestyle{empty}
+
+\author{Miha Zidar (63060317)}
+\title{OS1: Peta domača naloga}
+
+
+\begin{document}
+
+\begin{titlepage}
+\begin{center}
+
+% Upper part of the page
+\includegraphics{Screenshot.png}\\[5.0cm]    
+\textsc{\Large Seminarska naloga}\\[1.5cm]
+
+% Title
+\hrule \ \\[0.2cm]
+{ \huge \bfseries Temperaturni senzor na sistemu \\ ARM  FRI-SMS}\\[0.5cm]
+\hrule \ \\[2.5cm]
+
+% Author and supervisor
+\begin{minipage}{0.4\textwidth}
+\begin{flushleft} \large
+\emph{Avtorji:}\\
+Miha \textsc{Zidar}\\
+Matic \textsc{Potočnik}\\
+Anže \textsc{Pečar}\\
+Jaka \textsc{Sivec}\\
+\end{flushleft}
+\end{minipage}
+\begin{minipage}{0.4\textwidth}
+\begin{flushright} \large
+\emph{Mentor:} \\
+dr. Rajko  \textsc{Mahkovic}\\
+Aleksander   \textsc{Lukič}
+\end{flushright}
+\end{minipage}
+\vfill
+
+% Bottom of the page
+{\large \today}
+
+\end{center}
+\end{titlepage}
+
+\tableofcontents
+\newpage 
+
+\section{Uvod}
+Seminarska naloga predstavlja skupek vseh vaj ki smo jih imeli pri predmetu \emph{Operacijski sistemi 1}. V tej seminarski nalogi smo naredili jedrni modul - gonilnik za temperaturni senzor - za opeacijski sistem Linux ki teče na ARM9 procesorju FRI-SMS razvojne ploščice. Ustvarili smo nov sistemski klic, ki s pomočjo našega gonilnika, preko $I^2C$ vodila, prebere temperaturo z digitalnega senzorja \emph{LM75}. Za prikaz temperature, pa smo naredili tudi strežniški program, ki vsako sekundo prebere temperaturo in jo shrani v krožni pomnilnik. Zraven pa spada še grafični odjemalec, ki s strežnika dobi zadnjo, ali pa zadnjih nekaj prebranih temperatur in jih prikaže končnemu uporabniku. \\
+
+Kot dodatek smo naredili še testno okolje, s katerim smo testirali delovanje senzorja, neodvisno od operacijskega sistema Linux. To smo naredili z asemblerskim programom, ki naredi dve branji po en bajt iz senzorja v eno-sekundnih intervalih, ter nato podatke posreduje serijskim vratom. Program smo pognali s programom winIDEA, na računalniku pa smo imeli odprt serijski terminal na katerem smo opazovali podatke, ki smo jih brali s senzorja.
+
+\section{Opis sistema}
+\subsection{Oprema}
+Strežniški del seminarske naloge se izvaja na razvojnem sistemu \emph{FRI-SMS} z \emph{ARM9} procesorjem. Na tem sistemu je naložen operacijski sistem Linux z jedrom verzije 2.6.27. V to jedro smo dodali nov sistemski klic z kodo \emph{361}, ki skupaj z našim modulom \emph{ac.ko}, skrbita za branje temperature s senzorja.\\
+\subsubsection{I$^2$C}
+\emph{$I^2C$} je vodilo, ki ga je razvil \emph{Phillips} in se uporablja za priključitev nizko-hitrostnih perifernih naprav na matične plošče ali vgrajene (\emph{embedded}) sisteme. Sestavljata ga dve vodili \emph{Serial Data Line} in \emph{Serial Clock}. \emph{$I^2C$} vsebuje 7 bitni pomnilniški prostor, ki omogoča priključitev 112 vozlišč, ki komunicirajo preko istega vodila (ostalih 16 naslovov je rezerviranih). Vsako vozlišče ima lahko dve vlogi:
+\begin{itemize}
+	\item \emph{master} - vozlišče, ki oddaja uro in naslove \emph{slave} vozlišč
+	\item \emph{slave} - vozlišče, ki prejema uro in naslove
+\end{itemize} 
+Obstajajo štirje načini delovanja:
+\begin{itemize}
+	\item \emph{master transmit} - master vozlišče pošilja podatke slave vozlišču
+	\item \emph{master receive} - master vozlišče prejema podatke slave vozlišča
+	\item \emph{slave transmit} - slave vozlišče pošilja podatke master vozlišču
+	\item \emph{slave receive} - slave vozlišče prejema podatke master vozlišča
+\end{itemize} 
+Definirani so tudi trije tipi sporočil, vsak izmed njih se začne s \emph{START} in konča s \emph{STOP}:
+\begin{itemize}
+	\item Enojno sporočilo s katerim master piše podatke sužnju;
+	\item Enojno sporočilo s katerim master bere podatke s sužnja
+	\item Kombinirano sporočilo - master izvede vsaj dva branja ali pisanja na enega ali več sužnjev.
+\end{itemize} 
+Preko \emph{$I^2C$} vodila smo priključili naš temeraturni senzor \emph{LM75} na ARM ploščico. 
+\subsubsection{LM75}
+\emph{LM75} je senzor temperature in digitalni detektor prekoračenja temperature z {$I^2C$} vmesnikom, ki se zaradi majhne energijske zahtevnosti in vmesnika za {$I^2C$} pogosto uporablja za temperaturno upravljanje in varovanje pred napakami zaradi pregrevanja. 
+Gostitelj lahko senzor vpraša za temperaturo kadarkoli, izhod za pregrevanje (OS) pa se vključi, ko zaznana temperature preseže neko vnaprej določeno vrednost. OS lahko deluje v prekinitvenem ali primerjalnem načinu in omogoča programatsko nastavljanje temperaturnega praga.
+
+\begin{figure}[hbtp]
+  \centering
+  \includegraphics[height=15em]{./lm75-accuracy}
+  \caption{Natančnost LM75 senzorja v odvisnosti od temperature.}
+  \label{fig:lm75accuracy}
+\end{figure}
+
+Senzor deluje pri temperaturah med {$-55^{\circ}C$} in {$+125^{\circ}C$}, vendar temperatura vpliva na njegovo natančnost kot je razvidno iz Slike~\ref{fig:lm75accuracy}. Natančnost se v grobem giblje med -0.5 in +1 največja pa je pri {$35^{\circ}C$}.
+
+\emph{LM75} temperaturo sporoča v dvojiškem komplementu 9-ih bitov, ki se prenašajo v zgornjem in spodnjem bajtu. Biti D15-D7 predstavljajo podatek o temperaturi, kjer najmanj uteženi bit predstavlja {$0.5^{\circ}C$}, najbolj uteženi bit pa predznak. Prvi se prenese najbolj uteženi bit, zadnjih 7 bitov spodnjega bajta pa je zanemarljivih.
+
+Senzor nima lastne ure, saj deluje v podrejenem načinu in signal \emph{clk} dobi preko {$I^2C$} vodila. V našem primeru smo za naslavljanje senzorja uporabili fiksen naslov \emph{1001111}.
+
+\subsection{Server}
+Server oziroma temperaturni strežnik, deluje kot demon (proces ki se izvaja v ozadju). Vsako sekundo prebere temperaturo s senzorja in jo shrani v krožni pomnilnik. Med tem pa ena nit, ki jo strežnik ustvari ob zagonu, čaka na vhodne zahteve odjemalca na privzetih vratih 20000. Odjemalec lahko od strežnika zahteva eno izmed naslednjih treh stvari:
+\begin{itemize}
+	\item \verb|get_single_temp| - vzame temperaturo ki je na začetku krožnega pomnilnika.
+	\item \verb|get_last_temp| - vrne zadnjo prebrano temperaturo in ne vpliva na krožni pomnilnik.
+	\item \verb|get_temp_all| - vrne vse temperature in hkrati tudi izprazni krožni pomnilnik.
+\end{itemize}
+
+\subsection{Client}
+Client je program s katerim uporabnik lahko prenaša trenutno temperaturo ali zgodovino temperatur in si jih ogleda. Za prenos prebranih temperaturnih meritev, mora uporabnik najprej vpisati IP naslov FRI-SMS sistema, na katerem je strežnik. V primeru, da strežnik ne uporablja privzetih vrat, mora uporabnik izpolniti tudi to polje, sicer ga lahko pusti praznega in se bodo uporabila privzeta vrata 20000. Ko uporabnik vpiše pravilne podatke strežnika, lahko nato izbere enega izmed zgoraj naštetih ukazov, ki jih podpira strežnik.
+
+\newpage
+\section{Celoten postopek}
+Da smo sistem usposobili, je bilo potrebno urediti precej stvari. V nadaljevanju je opisan postopek, po katerem smo prišli do delujočega sistema. Celotni postopek se lahko od uporabnika do uporabnika razlikuje, saj je odvisno kako ima pripravljeno delovno okolje. 
+
+\subsection{Priprava okolja}
+Preden bomo lahko pripravili jedro, moramo na svojem računalniku pripraviti celotno okolje in namestiti vse potrebne programe:
+\begin{itemize}
+	\item Namestiti moramo programe in knjižnice na primer \emph{build-essential, svn, ncurses} in podobno. Če nam kak paket manjka nam bo javilo napako, ki jo nato odpravimo s pomočjo \emph{apt-get} ukaza ali \emph{Googla}, če nismo prepričani kateri paket nam manjka.
+	\item Za make okolje potrebujemo \emph{bash} in ne \emph{dash}, ki je privzeta lupina na Ubuntu-ju. To lahko preverimo z \emph{ls -l /bin/sh} in popravimo z ukazom \emph{sudo ln -sf /bin/bash /bin/sh}
+	\item Moramo imeti tudi celotno buildroot okolje, v katerem se nahaja \emph{arm-linux-gcc}. To okolje dobimo na spletni strani \emph{FRI-SMS} 
+		\begin{center}
+			\href{http://laps.fri.uni-lj.si/fri-sms/programje.php}{Buildroot okolje za prevajanje programja}
+		\end{center}
+		in ker imajo nakatere stvari absolutno pot vpisano, se mora ta mapa nahajati v \emph{/home/arm/} direktoriju.
+	\item Pomaga pa tudi ukaz \emph{sudo apt-get install good-luck} :)
+\end{itemize}
+
+\subsection{Priprava jedra}
+\begin{enumerate}
+	\item S svn stežnika predmeta prenesemo linux-2.6.27-fri jedro
+		\begin{lstlisting}
+cd /home/arm/
+svn checkout http://212.235.189.172/svn/miha.zidar/linux-2.6.27-fri linux-2.6.27-fri --username student
+cd linux-2.6.27-fri
+		\end{lstlisting}
+	\item V jedro dodamo popravek iz vaje7, ki naredi potrebne spremembe v linux jedru.
+		\begin{lstlisting}
+patch -p0 < vaja7.diff
+		\end{lstlisting}
+	\item Posamezne module lahko vklopimo ali izklopimo z pomočjo menuja, kar je lako koristno če pri prevajanju dobimo kakšno napako.
+		\begin{lstlisting}
+make menuconfig
+		\end{lstlisting}
+	\item Nato jedro zgradimo in naredimo sliko - če vam manjka kakšen paket, vas bo prevajalnik opozoril. Ko manjkajoče pakete naložite, še enkrat poženite isti ukaz.
+		\begin{lstlisting}
+make CROSS_COMPILE=arm-linux- ARCH=arm uImage
+		\end{lstlisting}
+\end{enumerate}
+Slika uImage se nahaja v \emph{arch/arm/boot/uImage}.
+
+\subsection{Priprava jedernega modula}
+\begin{enumerate}
+	\item Prestavimo se v mapo kjer imamo ac.c in naredimo Makefile (ac.c smo predelali iz datoteke \emph{predloga.c})
+		\begin{lstlisting}
+echo "obj-m := ac.o" > Makefile 
+		\end{lstlisting}
+	\item Zgradimo jedrni modul - pri tem se nahajamo v mapi \emph{/home/arm/gon} in imamo jedro v mapi \emph{/home/arm/linux-2.6.27-fri}
+		\begin{lstlisting}
+make CROSS_COMPILE=arm-linux- -C /home/arm/linux-2.6.27-fri M=/home/arm/gon modules
+		\end{lstlisting}
+\end{enumerate}
+Sedaj imamo v tej mapi na voljo jedrni modul \emph{ac.ko}.
+
+\subsection{Priprava TFTP streznika}
+\begin{enumerate}
+	\item Spodaj opisani postopek smo povzeli z naslova \\ \emph{http://www.unix.com/ubuntu/127020-configuring-ubuntu-9-04-tftp-server.html}
+		\begin{center}
+			\href{http://www.unix.com/ubuntu/127020-configuring-ubuntu-9-04-tftp-server.html}{Priprava TFTP streznika}
+		\end{center}
+	\item Namestimo TFTP
+		\begin{lstlisting}
+sudo apt-get install xinetd tftpd tftp
+		\end{lstlisting}
+	\item Ustvarimo datoteko \emph{/etc/xinetd.d/tftp} in vanjo vpisemo
+		\begin{lstlisting}
+service tftp
+{
+protocol = udp
+port = 69
+socket_type = dgram
+wait = yes
+user = nobody
+server = /usr/sbin/in.tftpd
+server_args = /tftpboot
+disable = no
+}
+		\end{lstlisting}
+	\item Ustvarimo mapo /tftpboot
+		\begin{lstlisting}
+sudo mkdir /tftpboot
+sudo chmod -R 777 /tftpboot
+sudo chown -R nobody /tftpboot
+		\end{lstlisting}
+	\item Poženemo TFTP strežnik
+		\begin{lstlisting}
+sudo /etc/init.d/xinetd start
+		\end{lstlisting}
+	\item nato damo v mapo strežnika uImage datoteko.
+		\begin{lstlisting}
+sudo cp /home/arm/linux-2.6.27-fri/arch/arm/boot/uImage /tftpboot
+sudo chmod -R 777 /tftpboot
+sudo chown -R nobody /tftpboot
+		\end{lstlisting}
+\end{enumerate}
+
+\subsection{priprava FRI-SMS ploščice}
+\begin{enumerate}
+	\item FRI-SMS ploščico povežemo na računalnik preko serijskega porta s poljubnim programom
+		\begin{lstlisting}
+    naprava: /dev/ttyS0
+    hitrost: 115200
+    brez paritete
+    8 bitov
+    1 stop bit
+    brez flow control
+		\end{lstlisting}
+	\item Vklopimo FRI-SMS ploščico, in prekinemo boot postopek (v treh sekundah od vklopa pritisnemo katerokoli tipko) in tako pridemo v uBoot meni.
+	\item V uBoot okolju nastavimo IP naslov ploščicne in strežnika ter MAC naslov naprave, kar potrebujemo za to, da bomo lahko s TFTP prenesli sliko novega jedra - za dodatne možnosti si oglejte \emph{http://www.embedian.com/index.php?main\_page=ubootev}
+		\begin{center}
+			\href{http://www.embedian.com/index.php?main\_page=ubootev}{uBoot okolje}
+		\end{center}
+		\begin{lstlisting}
+setenv ipaddr 192.168.1.2
+setenv serverip 192.168.1.4
+ethaddr 12:12:12:12:12:12
+		\end{lstlisting}
+	\item Ko smo prižgali ploščico, so se nam izpisali naslovi določenih stvari. Izpis zgleda približno tako:
+		\begin{lstlisting}
+Area 0: C0000000 to C00041FF (RO) Bootstrap
+Area 1: C0004200 to V00083FF      Enviroment
+Area 2: C0008400 to C0041FFF (RO) U-Boot
+Area 3: C0042000 to C0251FFF      Kernel
+Area 4: C0252000 to C041FFFF      FS
+		\end{lstlisting}
+	\item V tem primeru se jedro(kernel) nahaja na naslovu od C0042000 do C0251FFF. Sedaj lahko pobrišemo staro jedro. Pred naslov je potrebno dati 0x, saj gre za šestnajstiški zapis.
+		\begin{lstlisting}
+erase 0xC0042000 0xC0251FFF
+		\end{lstlisting}
+	\item Prenesemo uImage (novo linux jedro) s TFTP strežnika.
+		\begin{lstlisting}
+tftp 0x21000000 uImage 
+		\end{lstlisting}
+	\item Sedaj pa prenesemo uImage iz RAMa v flash pomilnik. Tukaj predstavlja \emph{0xabc}, velikost jedra, ki jo lahko preberemo iz izpisa ob koncu TFTP prenosa jedra na ploščico.
+		\begin{lstlisting}
+cp.b 0x21000000 0xC0042000 0xabc 		
+		\end{lstlisting}
+	\item Sedaj lahko zaženemo sistem z novim jedrom
+		\begin{lstlisting}
+boot
+		\end{lstlisting}
+	\item Prijavimo se v sistem (po možnosti kot root), prenesemo ac.ko na ploščico (na poljuben način) in sedaj le še dodamo jedrni modul ac.ko, da ga bo jedro lahko uporabilo.
+		\begin{lstlisting}
+ssh 192.168.1.4:ac.ko .
+insmod ac.ko  
+		\end{lstlisting}
+		Če je bil modul uspešno naložen, se mora pokazati naslednja vrstica
+		\begin{lstlisting}
+ac 0-004f: hwmon0: sensor 'lm75'
+		\end{lstlisting}
+\end{enumerate}
+Sedaj naj bi FRI-SMS ploščica znala pravilno servirati sistemski klic 361 (oz get\_temp).
+
+\subsection{Server in Client}
+Za prevajanje Server-ja in Client-a nimamo zapletenega postopka, saj je vse že v \emph{Makefile} datoteki.
+Edino kar je potrebno narediti pred ukazom make, je navesti, kje se nahaja arm-linux-gcc prevajalnik.
+		\begin{lstlisting}
+export PATH=/home/arm/buildroot-2009.11-fri/output/staging/usr/bin/:\$PATH		
+		\end{lstlisting}
+
+\subsection{Vsi programi}
+Vsi programi, ki jih lahko ustvarimo z zgoraj opisanim postopkom, so že prevedeni v prilogi seminarski nalogi, v mapi \emph{compiled}. Dodatno pa smo dodali še prevedeni strežnik ki ne uporablja sistemskega klica, ampak vrača kar naključna števila in je namenjen za testiranje. Strežnik pa je preveden tudi za Ubuntu Linux na 32-bitni arhitekturi, ter za ARM procesor. \\
+Vsi prevedeni programi v prilogi so:
+\begin{itemize}
+	\item \emph{ac.ko}
+	\item \emph{uImage}
+	\item \emph{client-x86}
+	\item \emph{server-arm-syscall}
+	\item \emph{server-arm-random}
+	\item \emph{server-x86-syscall}
+	\item \emph{server-x86-random}
+\end{itemize}
+
+\newpage
+\section{Izvorna koda}
+\subsection{Server}
+Spodaj je izvorna koda za temperaturni strežnik, in Makefile za ARM arhitekturo. Za prevajanje \emph{server.c} datoteke so potrebne še \emph{defs.h, buf.h, buf.c} datoteke, ki so priložene seminarski nalogi.\\
+\ \\
+\lstinputlisting[language=C,backgroundcolor=\color{LightBlue},caption=Makefile]{programcki/server/Makefile}
+\lstinputlisting[language=C,backgroundcolor=\color{LightBlue},caption=server.c]{programcki/server/server.c}
+
+\subsection{Client}
+Tako kot za strežnik, tudi tukaj niso prikazane vse datoteke, ampak le tiste, ki so pomembne za razumevanje programa, ostale datoteke, ki so pomemebne za prevajanje pa se nahajajo v prilogi.
+%\lstinputlisting[language=C,backgroundcolor=\color{LightBlue},caption=Makefile]{programcki/client/Makefile}
+\lstinputlisting[language=C,backgroundcolor=\color{LightBlue},caption=client.cpp]{programcki/client/client.cpp}
+\lstinputlisting[language=C,backgroundcolor=\color{LightBlue},caption=mainwindow.cpp]{programcki/client/mainwindow.cpp}
+
+\subsection{Kernel module}
+\lstinputlisting[language=C,backgroundcolor=\color{LightBlue},caption=Makefile]{programcki/loadableKernelModul/Makefile}
+\lstinputlisting[language=C,backgroundcolor=\color{LightBlue},caption=ac.c]{programcki/loadableKernelModul/ac.c}
+
+\subsection{Syscall Patch file}
+\lstinputlisting[language=bash,backgroundcolor=\color{LightBlue},caption=SysPatch.diff]{programcki/vaja7.diff}
+
+\pagebreak
+\subsection{Asembler testni program}
+Program ki inicializira registre za komunikacijo s serijskimi vrati in za vodilo $I^2C$. Podatki ki se prikažejo v Com terminalu so surovi podatki, ki ji dobimo z senzorja $LM75$ in so oblike $t_{15}t_{14}\cdots t_8 t_7 n_6 \cdots n_0$. Biti $t_w$ predstavljajo prebrano temperaturo v formatu ki jo poda $LM75$, biti $n_z$ pa predstavljajo naslov naprave.\\
+\begin{figure}[hbtp]
+  \centering
+  \includegraphics[height=20em]{./arm-meritve-workin}
+  \caption{Primer izhoda testnega programa.}
+  \label{fig:arm-meritve-workin}
+\end{figure}
+
+\lstinputlisting[language=bash,backgroundcolor=\color{LightBlue},caption=lm75.asm]{programcki/lm75.asm}
+
+\end{document}

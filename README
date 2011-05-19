@@ -1,0 +1,14 @@
+Reading the temperature from LM75 sensor on my Arm embedded system.
+
+The project contains:
+LM75 driver and kernel module, implemented with a new syscall
+Server program that reads the temperature in 1 second interval,
+Client program for displaying the temperature.
+
+An asembly program for testing the LM75 module and i2c connection.
+
+
+BUGS: the kernel on my machine, doesn't detect LM75cim chip, but it does detect LM75aim chip when trying to load the kernel module.
+a simple fix is if you have the aim version of the chip, you can connect it to load the module, and then replace the sensor for the cim version.
+
+PS: some notes are written in slovene. I'll try to translate them later.
